@@ -4,7 +4,8 @@ import type { Country } from './types'
 export const countriesApi = createApi({
   reducerPath: 'countriesApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_RESTCOUNTRIES_API_KEY || 'https://restcountries.com/v3.1/',
+    baseUrl:
+      import.meta.env.VITE_RESTCOUNTRIES_API_KEY || 'https://restcountries.com/v3.1',
   }),
   endpoints: builder => ({
     getCountries: builder.query<Country[], void>({
