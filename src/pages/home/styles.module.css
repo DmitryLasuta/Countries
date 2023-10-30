@@ -1,0 +1,25 @@
+.homepage {
+  text-align: center;
+
+  .homepage__title {
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+  }
+
+  .homepage__image {
+    max-width: 100%;
+    display: none;
+    margin: 2rem auto 0;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .homepage__description {
+    text-align: justify;
+    font-size: 1.2rem;
+    text-align: inherit;
+    margin-top: 2rem;
+  }
+}

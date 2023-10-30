@@ -1,0 +1,31 @@
+.countries__profile {
+  padding: 15px;
+  background-color: var(--bg-color);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  .countries__profile-flag {
+    width: fit-content;
+    height: fit-content;
+    & img {
+      border: 2px solid var(--font-color);
+    }
+  }
+
+  .countries__profile-info {
+    padding: 1rem;
+
+    .countries__profile-title {
+      margin-bottom: 0.5rem;
+    }
+
+    .countries__profile-details {
+      font-size: 0.9rem;
+
+      & strong {
+        font-weight: 700;
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+.search-control {
+  padding: 3rem 0 1rem;
+}
+
+.search-control__form {
+  background-color: var(--bg-color);
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+
+  &:has(input[type='search']:focus) {
+    outline: 2px solid var(--font-color);
+  }
+
+  .search-control__button {
+    font-size: 0;
+    padding: 0.5rem 1.2rem;
+  }
+
+  .search-control__input {
+    width: 100%;
+
+    &::placeholder {
+      color: color-mix(in srgb, var(--font-color) 40%, transparent 60%);
+    }
+  }
+}

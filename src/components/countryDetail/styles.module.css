@@ -1,0 +1,7 @@
+.country-detail {
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+  .country-detail__label {
+    font-weight: bold;
+  }
+}

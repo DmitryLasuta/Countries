@@ -1,0 +1,51 @@
+.container {
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0 25px;
+}
+
+:root {
+  font: 400 calc(clamp(0.875rem, 0.3vw + 0.808rem, 1.25rem)) / 1.5 'Roboto', sans-serif;
+
+  --font-color: #222;
+  --bg-color: #fff;
+  --body-bg-color: #f0f0f0;
+}
+
+:root[data-theme='dark'] {
+  --font-color: #fff;
+  --bg-color: #383838;
+  --body-bg-color: #7a7a7a;
+}
+
+body {
+  color: var(--font-color);
+  background-color: var(--body-bg-color);
+  scrollbar-width: thin;
+  overflow-y: scroll;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+a {
+  border-radius: 5px;
+
+  &:focus-visible {
+    outline: 2px solid var(--font-color);
+    outline-offset: 4px;
+  }
+}
