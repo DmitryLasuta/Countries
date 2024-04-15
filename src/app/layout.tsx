@@ -1,6 +1,10 @@
 import './globals.css';
 
 import type { Metadata } from 'next';
+import { Nunito_Sans } from 'next/font/google';
+import { TheHeader } from '@/components';
+
+const nunitoSans = Nunito_Sans({ subsets: ['latin'], weight: ['300', '600', '800'] });
 
 export const metadata: Metadata = {
   title: 'Countries',
@@ -11,7 +15,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={nunitoSans.className}>
+        <TheHeader />
+        <main className="min-h-screen p-4 text-very-dark-black-blue dark:text-white bg-very-light-gray dark:bg-very-dark-blue">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
