@@ -1,166 +1,36 @@
-# [Countries]()
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-<p align="center">
-   <img alt="Countries" src="./docs/preview.png"  />
-<p>
+## Getting Started
 
-## Description
+First, run the development server:
 
-Countries is a web application developed using:
-
-- React;
-- Redux Toolkit;
-- RTK Query;
-- React Router;
-- Redux Middleware.
-
-It provides information about different countries and allows users to obtain detailed information about each country.
-
-## Functionality
-
-### Routing
-
-The ability to navigate between different pages in the application, such as the home page, detailed page, and search page.
-
-```tsx
-function App() {
-  return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route index path="/" element={<Home />} />
-        <Route path="/login" element={<LogIn />} />
-
-        <Route element={<PrivateRouter />}>
-          <Route path="/AllCountries">
-            <Route index element={<AllCountries />} />
-            <Route path=":commonName" element={<CountryPage />} />
-          </Route>
-        </Route>
-
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
-  )
-}
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-The project has the simple private route that checks if the user is authenticated or not.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```tsx
-export default function PrivateRouter() {
-  const location = useLocation()
-  const { isLoggedIn } = useAppSelector(state => state.auth)
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-  if (!isLoggedIn) {
-    return <Navigate to="/login" state={{ from: location }} replace />
-  }
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-  return <Outlet />
-}
-```
+## Learn More
 
-### Fetching country data from an external API.
+To learn more about Next.js, take a look at the following resources:
 
-To fetch country data from an external API, the project uses the [REST Countries API](https://restcountries.com/).
-For this case the project uses the [React Query](https://react-query-v3.tanstack.com/) library.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-There are queries for the following endpoints:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-- AllCountries: Retrieves a list of all countries.
-- CountryPage: Retrieves detailed information about a specific country.
+## Deploy on Vercel
 
-```tsx
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { Country } from './types'
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-export const countriesApi = createApi({
-  reducerPath: 'countriesApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_RESTCOUNTRIES_API_KEY,
-  }),
-  endpoints: builder => ({
-    getCountries: builder.query<Country[], void>({
-      query: () => 'all',
-      transformResponse: (response: Country[]) =>
-        response.sort((a, b) => a.name.official.localeCompare(b.name.official)),
-    }),
-    getCountryByName: builder.query<Country, string>({
-      query: name => `name/${name}`,
-      transformResponse: (response: Country[]) => response[0],
-    }),
-  }),
-})
-
-export const { useGetCountriesQuery, useGetCountryByNameQuery } = countriesApi
-```
-
-### Ability to search for a country by name
-
-Inside the AllCountries page, define the following state variables and hooks:
-
-- searchTerms - a state variable that stores the search query.
-- deferredSearchTerms - a variable obtained using the useDeferredValue hook to delay the update of the searchTerms value.
-- data and isFetching - the result and loading state of the data fetched using the useGetCountriesQuery hook.
-
-> If the data is being fetched or the data is not available yet, the component returns a `"Loading..."` message.
-
-- filteredCountries - this is the filtered list of countries based on the search query. The list is filtered based on the country name using the filter method and checking if the search query is included in the country name.
-
-```tsx
-const [searchTerms, setSearchTerms] = useState('')
-const deferredSearchTerms = useDeferredValue(searchTerms)
-const { data, isFetching } = useGetCountriesQuery()
-
-if (isFetching || !data) {
-  return <div>Loading...</div>
-}
-
-const filteredCountries = data.filter(country =>
-  country.name.common.toLowerCase().includes(deferredSearchTerms.toLowerCase())
-)
-
-return (
-  <>
-    <SearchControl searchHandler={setSearchTerms} />
-    <CountriesList countryDataset={filteredCountries} />
-  </>
-)
-```
-
-### Detailed page with information about the selected country, including population, area, currency, and other details
-
-### Theme customization: Ability to change the theme of the application, allowing users to switch between light and dark themes using the `theme context`
-
-### Pagination: The ability to split the results of API queries into smaller chunks, improving performance and user experience for large datasets.
-
-I have created the custom hook `useChunks` to achieve this. It takes an array of items and a chunk size as input and returns an array of chunks.
-
-```tsx
-export const useChunks = <T,>(dataSet: T[], chunkSize: number = 10) => {
-  const [currentChunkIndex, setCurrentChunkIndex] = useState(0)
-
-  const chunks = dataSet.reduce((acc: Array<T[]>, country, index) => {
-    if (index % chunkSize === 0) {
-      acc.push([])
-    }
-    acc[acc.length - 1].push(country)
-
-    return acc
-  }, [])
-
-  const chunkToRender = chunks.slice(0, currentChunkIndex + 1).flat()
-  const goToNextChunk = () => setCurrentChunkIndex(prev => prev + 1)
-  const resetChunks = () => setCurrentChunkIndex(0)
-
-  useEffect(() => {
-    if (chunkToRender.length <= chunkSize) setCurrentChunkIndex(0)
-  }, [chunkSize, chunkToRender.length])
-
-  return {
-    chunkToRender,
-    currentChunkIndex,
-    goToNextChunk,
-    resetChunks,
-  }
-}
-```
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
