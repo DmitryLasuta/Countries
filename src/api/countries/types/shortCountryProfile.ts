@@ -1,6 +1,6 @@
 import type { Flags, Name, Region } from './fields';
 
-export type ShortCountryData = {
+export type ShortCountryProfile = {
   flags: Flags;
   name: Name;
   capital: string[];
