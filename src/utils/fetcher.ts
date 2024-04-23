@@ -1,6 +1,6 @@
 async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(url, { ...options, next: { revalidate: 3600 } });
     if (!response.ok) {
       throw new Error(`Failed to fetch. Status code ${response.status}`);
     } else {
