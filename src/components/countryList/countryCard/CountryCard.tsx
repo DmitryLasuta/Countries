@@ -8,7 +8,7 @@ type CountryCardProps = {
 const CountryCard = ({ country }: CountryCardProps) => {
   const { capital, flags, name, population, region } = country;
   return (
-    <section className="bg-white rounded dark:bg-dark-blue">
+    <section className="bg-white rounded dark:bg-dark-blue border border-very-dark-blue dark:border-none">
       <figure>
         <picture className="p-2 flex">
           <source srcSet={flags.svg} type="image/svg+xml" />
