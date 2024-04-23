@@ -9,7 +9,7 @@ const CountryCard = ({ country }: CountryCardProps) => {
   const { capital, flags, name, population, region } = country;
   return (
     <section className="bg-white rounded dark:bg-dark-blue">
-      <figure className="">
+      <figure>
         <picture className="p-2 flex">
           <source srcSet={flags.svg} type="image/svg+xml" />
           <Image className="w-full aspect-[2/1]" src={flags.png} alt={flags.alt} width={300} height={200} />
