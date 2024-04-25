@@ -89,9 +89,7 @@ class CountriesApi {
    */
 
   public getCountryProfileByCode = (code: string): Promise<CountryProfile> => {
-    return this.fetcher<CountryProfile[]>(
-      `${this.baseUrl}/alpha/${code}?fields=${this.countryProfileFields.join(',')}`
-    );
+    return this.fetcher<CountryProfile>(`${this.baseUrl}/alpha/${code}?fields=${this.countryProfileFields.join(',')}`);
   };
 }
 
