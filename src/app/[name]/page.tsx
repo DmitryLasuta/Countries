@@ -1,6 +1,5 @@
 import { getCountryProfileByCode, getCountryProfileByName } from '@/api';
 
-import { GoBackButton } from '@/components';
 import Image from 'next/image';
 import Link from 'next/link';
 
