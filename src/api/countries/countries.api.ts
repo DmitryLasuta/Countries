@@ -1,35 +1,101 @@
-import type { ShortCountryProfile } from './types';
-import { fetcher } from '@/utils';
+import type { CountryProfile, ShortCountryProfile } from './types';
 
 /**
- * Class for interacting with the countries API.
+ * Class for handling requests to the countries API.
+ * @class
  */
 class CountriesApi {
-  /** Base URL for the countries API. */
-  private baseUrl = 'https://restcountries.com/v3.1';
+  /**
+   * Base URL for the countries API.
+   * @private
+   */
+  private readonly baseUrl = 'https://restcountries.com/v3.1';
+  /**
+   * Array of strings containing field names for short country profiles.
+   * @private
+   */
+  private readonly shortProfileFields = ['flags', 'name', 'capital', 'region', 'population'];
+  /**
+   * Array of strings containing field names for country profiles.
+   * @private
+   */
+  private readonly countryProfileFields = [
+    ...this.shortProfileFields,
+    'tld',
+    'currencies',
+    'languages',
+    'borders',
+    'subregion',
+  ];
+
+  /**
+   * Private method for performing fetch requests.
+   * @param {string} url - The URL for the request.
+   * @param {RequestInit} [options] - Optional request parameters.
+   * @returns {Promise<T>} Returns a promise with the result of the request.
+   * @private
+   */
+  private async fetcher<T>(url: string, options?: RequestInit): Promise<T> {
+    try {
+      const response = await fetch(url, { ...options, next: { revalidate: 3600 } });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch. Status code ${response.status}`);
+      } else {
+        return (await response.json()) as T;
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 
   /**
    * Retrieves short profiles for all countries with selected fields.
    * @returns A promise resolving to an array of short country profiles.
+   * @public
    */
-  public getAllShortCountryProfiles = async () => {
-    // Define fields for short country profiles
-    const shortProfileFields = ['flags', 'name', 'capital', 'region', 'population'];
-    return await this.getField<ShortCountryProfile[]>(shortProfileFields);
+  public getAllShortCountryProfiles = () => {
+    return this.getField<ShortCountryProfile[]>(this.shortProfileFields);
   };
 
   /**
    * Retrieves specified fields for all countries.
-   * @param fields Array of strings containing field names.
+   * @param {string[]} fields - Array of strings containing field names.
    * @returns A promise resolving to an array of values for the specified fields for all countries.
+   * @public
    */
-  public getField = async <T>(fields: string[]) => {
+  public getField = <T>(fields: string[]): Promise<T> => {
     const serializedFields = fields.join(',');
-    return await fetcher<T>(`${this.baseUrl}/all?fields=${serializedFields}`);
+    return this.fetcher<T>(`${this.baseUrl}/all?fields=${serializedFields}`);
+  };
+
+  /**
+   * Retrieves a country profile by name.
+   * @param {string} name - The name of the country.
+   * @returns A promise resolving to a country profile.
+   * @public
+   */
+  public getCountryProfileByName = async (name: string): Promise<CountryProfile> => {
+    const data = await this.fetcher<CountryProfile[]>(
+      `${this.baseUrl}/name/${name}?fields=${this.countryProfileFields.join(',')}`
+    );
+    return data[0];
+  };
+
+  /**
+   * Retrieves a country profile by code.
+   * @param code - The code of the country.
+   * @returns A promise resolving to a country profile.
+   */
+
+  public getCountryProfileByCode = (code: string): Promise<CountryProfile> => {
+    return this.fetcher<CountryProfile[]>(
+      `${this.baseUrl}/alpha/${code}?fields=${this.countryProfileFields.join(',')}`
+    );
   };
 }
 
 const countriesApi = new CountriesApi();
 
-export const { getAllShortCountryProfiles, getField } = countriesApi;
+export const { getAllShortCountryProfiles, getField, getCountryProfileByName, getCountryProfileByCode } = countriesApi;
 export default countriesApi;
