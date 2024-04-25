@@ -34,20 +34,20 @@ export default async function Country({ params }: Readonly<{ params: { name: str
   return (
     <>
       <GoBackButton />
-      <figure className="flex flex-col lg:flex-row lg:gap-10 mx-auto max-w-7xl">
+      <figure className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10 mx-auto max-w-7xl mt-10">
         <picture className="flex items-center justify-center">
           <source srcSet={flags.svg} type="image/svg+xml" />
           <Image
             className="w-[95%] max-w-[520px] aspect-[2/1] border dark:border-transparent border-very-dark-blue"
             src={flags.png}
             alt={flags.alt}
-            width={300}
-            height={200}
+            width={520}
+            height={300}
           />
         </picture>
         <figcaption>
           <h1 className="capitalize font-bold text-xl my-4 text-center lg:text-left">{name.common}</h1>
-          <div className="flex flex-col sm:flex-row sm:gap-10 justify-center">
+          <div className="flex flex-col sm:flex-row sm:gap-10 mb-">
             {Object.values(overview).map((row, index) => (
               <ul key={index} className="flex flex-col">
                 {Object.entries(row).map(([rowName, rowValue]) => (
@@ -58,17 +58,23 @@ export default async function Country({ params }: Readonly<{ params: { name: str
               </ul>
             ))}
           </div>
-          <div>
-            Borders:{' '}
-            {borders.length ? (
-              borders.map((border, index) => (
-                <Link key={index} href={`/${border}`} className="mx-2">
-                  {border}
-                </Link>
-              ))
-            ) : (
-              <span className="text-slate-500">No borders</span>
-            )}
+          <div className="flex mt-4 items-center gap-2">
+            <h4>Border Countries: </h4>
+            <ul className="flex gap-2 flex-wrap">
+              {borders.length ? (
+                borders.map((border, index) => (
+                  <Link
+                    className="rounded px-2 py-1 bg-slate-400 hover:bg-slate-600 text-dark-blue hover:text-white dark:bg-slate-700 dark:hover:bg-slate-500 dark:text-white transition-colors"
+                    key={index}
+                    href={`/${border}`}
+                  >
+                    {border}
+                  </Link>
+                ))
+              ) : (
+                <li className="text-slate-500">No borders</li>
+              )}
+            </ul>
           </div>
         </figcaption>
       </figure>
