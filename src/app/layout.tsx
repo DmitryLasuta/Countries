@@ -17,9 +17,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={nunitoSans.className}>
         <TheHeader />
-        <div className="min-h-screen p-4 text-very-dark-black-blue dark:text-white bg-very-light-gray dark:bg-very-dark-blue">
+        <main className="py-4 px-4 sm:px-8 lg:px-10 min-h-[calc(100vh-4.25rem)] text-very-dark-black-blue dark:text-white bg-very-light-gray dark:bg-very-dark-blue">
           {children}
-        </div>
+        </main>
       </body>
     </html>
   );
