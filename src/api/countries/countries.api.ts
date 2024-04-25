@@ -15,6 +15,18 @@ class CountriesApi {
    * @private
    */
   private readonly shortProfileFields = ['flags', 'name', 'capital', 'region', 'population'];
+  /**
+   * Array of strings containing field names for country profiles.
+   * @private
+   */
+  private readonly countryProfileFields = [
+    ...this.shortProfileFields,
+    'tld',
+    'currencies',
+    'languages',
+    'borders',
+    'subregion',
+  ];
 
   /**
    * Private method for performing fetch requests.
@@ -33,7 +45,7 @@ class CountriesApi {
       }
     } catch (error) {
       console.error(error);
-      return Promise.reject(error);
+      throw error;
     }
   }
 
@@ -52,7 +64,7 @@ class CountriesApi {
    * @returns A promise resolving to an array of values for the specified fields for all countries.
    * @public
    */
-  public getField = <T>(fields: string[]) => {
+  public getField = <T>(fields: string[]): Promise<T> => {
     const serializedFields = fields.join(',');
     return this.fetcher<T>(`${this.baseUrl}/all?fields=${serializedFields}`);
   };
@@ -63,13 +75,27 @@ class CountriesApi {
    * @returns A promise resolving to a country profile.
    * @public
    */
-  public getCountryProfileByName = (name: string) => {
-    const fields = [...this.shortProfileFields, 'tld', 'currencies', 'languages', 'borders'];
-    return this.fetcher<CountryProfile>(`${this.baseUrl}/name/${name}?fields=${fields.join(',')}`);
+  public getCountryProfileByName = async (name: string): Promise<CountryProfile> => {
+    const data = await this.fetcher<CountryProfile[]>(
+      `${this.baseUrl}/name/${name}?fields=${this.countryProfileFields.join(',')}`
+    );
+    return data[0];
+  };
+
+  /**
+   * Retrieves a country profile by code.
+   * @param code - The code of the country.
+   * @returns A promise resolving to a country profile.
+   */
+
+  public getCountryProfileByCode = (code: string): Promise<CountryProfile> => {
+    return this.fetcher<CountryProfile[]>(
+      `${this.baseUrl}/alpha/${code}?fields=${this.countryProfileFields.join(',')}`
+    );
   };
 }
 
 const countriesApi = new CountriesApi();
 
-export const { getAllShortCountryProfiles, getField, getCountryProfileByName } = countriesApi;
+export const { getAllShortCountryProfiles, getField, getCountryProfileByName, getCountryProfileByCode } = countriesApi;
 export default countriesApi;

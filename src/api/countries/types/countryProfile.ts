@@ -6,4 +6,5 @@ export interface CountryProfile extends ShortCountryProfile {
   currencies: Currencies;
   borders: string[];
   languages: Record<string, string>;
+  subregion: string;
 }
