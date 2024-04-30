@@ -11,6 +11,9 @@ type CountryListProps = {
 const CountryList = async ({ region = 'all', q = '' }: CountryListProps) => {
   const countries = region === 'all' ? await getAllShortCountryProfiles() : await getCountriesByRegion(region);
   const searchedCountries = q ? countries.filter(country => country.name.common.includes(q)) : countries;
+
+  if (!searchedCountries.length) return <p className="text-center">No countries found</p>;
+
   return (
     <Grid>
       {searchedCountries.map(country => (
