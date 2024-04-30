@@ -1,52 +1,26 @@
-import stylesClassList from './styles.module.css'
+import { getAllShortCountryProfiles, getCountriesByRegion } from '@/api';
 
-import { ScrollToTopButton } from '@components/scrollToTopButton'
-import { Link, useLocation } from 'react-router-dom'
-import { CountryProfileCard } from './countryProfileCard'
-import type { Country } from '@redux/countries'
-import { useChunks } from '@hooks/useChunks'
+import { CountryCard } from './countryCard';
+import { Grid } from '@/components/ui';
 
-const CountriesList = ({ countryDataset }: { countryDataset: Country[] }) => {
-  const { pathname } = useLocation()
-  const { chunkToRender: countryForDisplay, goToNextChunk } = useChunks(
-    countryDataset,
-    16
-  )
+type CountryListProps = {
+  region?: string;
+  q?: string;
+};
+
+const CountryList = async ({ region = 'all', q = '' }: CountryListProps) => {
+  const countries = region === 'all' ? await getAllShortCountryProfiles() : await getCountriesByRegion(region);
+  const searchedCountries = q ? countries.filter(country => country.name.common.includes(q)) : countries;
+
+  if (!searchedCountries.length) return <p className="text-center">No countries found</p>;
 
   return (
-    <section className={stylesClassList.countries}>
-      <div className="container">
-        <p className={stylesClassList.countries__count}>
-          Countries: <strong>{countryDataset.length}</strong>
-        </p>
+    <Grid>
+      {searchedCountries.map(country => (
+        <CountryCard key={country.name.common} country={country} />
+      ))}
+    </Grid>
+  );
+};
 
-        <ul className={stylesClassList.countries__list}>
-          {countryForDisplay.map(country => (
-            <li key={country.name.common}>
-              <Link
-                className={stylesClassList.countries__link}
-                to={`${pathname}/${country.name.common}`}
-              >
-                <CountryProfileCard {...country} />
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        {countryForDisplay.length < countryDataset.length ? (
-          <button
-            type="button"
-            onClick={goToNextChunk}
-            className={stylesClassList.countries__button}
-          >
-            Load more
-          </button>
-        ) : null}
-
-        <ScrollToTopButton />
-      </div>
-    </section>
-  )
-}
-
-export default CountriesList
+export { CountryList };
