@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { COUNTRY_LIST_SEARCH_PARAMS } from '@/constants';
-import { useState } from 'react';
 import { useUpdateSearchParams } from '@/hooks';
 
 const RegionFilter = () => {
@@ -10,6 +11,16 @@ const RegionFilter = () => {
   const [selectedRegion, setSelectedRegion] = useState(
     readOnlySearchParams.get(COUNTRY_LIST_SEARCH_PARAMS.REGION) ?? 'all'
   );
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      updateSearchParams({ key: COUNTRY_LIST_SEARCH_PARAMS.REGION, value: selectedRegion });
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [selectedRegion, updateSearchParams]);
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegion(target.value);

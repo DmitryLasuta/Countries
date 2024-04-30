@@ -7,7 +7,7 @@ import { useUpdateSearchParams } from '@/hooks';
 
 const Search = () => {
   const { updateSearchParams, readOnlySearchParams } = useUpdateSearchParams();
-  const [searchTerm, setSearchTerm] = useState(readOnlySearchParams.get('q') ?? '');
+  const [searchTerm, setSearchTerm] = useState(readOnlySearchParams.get(COUNTRY_LIST_SEARCH_PARAMS.SEARCH_QUERY) ?? '');
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(target.value);
