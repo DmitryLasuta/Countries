@@ -1,12 +1,19 @@
+import { getAllShortCountryProfiles, getCountriesByRegion } from '@/api';
+
 import { CountryCard } from './countryCard';
 import { Grid } from '@/components/ui';
-import { getAllShortCountryProfiles } from '@/api';
 
-const CountryList = async () => {
-  const countries = await getAllShortCountryProfiles();
+type CountryListProps = {
+  region?: string;
+  q?: string;
+};
+
+const CountryList = async ({ region = 'all', q = '' }: CountryListProps) => {
+  const countries = region === 'all' ? await getAllShortCountryProfiles() : await getCountriesByRegion(region);
+  const searchedCountries = q ? countries.filter(country => country.name.common.includes(q)) : countries;
   return (
     <Grid>
-      {countries.map(country => (
+      {searchedCountries.map(country => (
         <CountryCard key={country.name.common} country={country} />
       ))}
     </Grid>
