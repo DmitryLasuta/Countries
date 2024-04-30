@@ -91,9 +91,26 @@ class CountriesApi {
   public getCountryProfileByCode = (code: string): Promise<CountryProfile> => {
     return this.fetcher<CountryProfile>(`${this.baseUrl}/alpha/${code}?fields=${this.countryProfileFields.join(',')}`);
   };
+
+  /**
+   * Retrieves countries by region.
+   * @param region - The name of the region.
+   * @returns A promise resolving to an array of country profiles.
+   */
+  public getCountriesByRegion = (region: string): Promise<ShortCountryProfile[]> => {
+    return this.fetcher<ShortCountryProfile[]>(
+      `${this.baseUrl}/region/${region}?fields=${this.shortProfileFields.join(',')}`
+    );
+  };
 }
 
 const countriesApi = new CountriesApi();
 
-export const { getAllShortCountryProfiles, getField, getCountryProfileByName, getCountryProfileByCode } = countriesApi;
+export const {
+  getAllShortCountryProfiles,
+  getField,
+  getCountryProfileByName,
+  getCountryProfileByCode,
+  getCountriesByRegion,
+} = countriesApi;
 export default countriesApi;
