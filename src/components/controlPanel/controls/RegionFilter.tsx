@@ -24,7 +24,6 @@ const RegionFilter = () => {
 
   const handleChange = ({ target }: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegion(target.value);
-    updateSearchParams({ key: COUNTRY_LIST_SEARCH_PARAMS.REGION, value: target.value });
   };
 
   const regions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'];
