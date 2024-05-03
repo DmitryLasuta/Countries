@@ -1,14 +1,32 @@
-import { getCountryProfileByCode, getCountryProfileByName } from '@/api';
-
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+import { getCountryDataByNameOrCode } from '@/services';
 
-export default async function Country({ params }: Readonly<{ params: { name: string } }>) {
-  let country;
-  if (params.name.length <= 3) {
-    country = await getCountryProfileByCode(params.name);
-  } else country = await getCountryProfileByName(params.name);
-  const { name, flags, borders, capital, currencies, languages, population, region, tld, subregion } = country;
+type CountryPageParams = Readonly<{ params: { name: string } }>;
+
+export async function generateMetadata({ params }: CountryPageParams): Promise<Metadata> {
+  const country = await getCountryDataByNameOrCode(params.name);
+
+  return {
+    title: `${country.name.common} | Countries`,
+    description: `Learn more about ${country.name.common} on Countries.`,
+    openGraph: {
+      title: `${country.name.common} | Countries`,
+      description: `Learn more about ${country.name.common} on Countries.`,
+      images: [
+        {
+          url: country.flags.svg,
+          alt: `${country.name.common} flag`,
+        },
+      ],
+    },
+  };
+}
+
+export default async function Country({ params }: CountryPageParams) {
+  const { name, flags, borders, capital, currencies, languages, population, region, tld, subregion } =
+    await getCountryDataByNameOrCode(params.name);
 
   const nativeName = Object.values(name.nativeName)[0].common;
   const currenciesList = Object.values(currencies);
