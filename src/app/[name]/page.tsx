@@ -6,18 +6,18 @@ import { getCountryDataByNameOrCode } from '@/services';
 type CountryPageParams = Readonly<{ params: { name: string } }>;
 
 export async function generateMetadata({ params }: CountryPageParams): Promise<Metadata> {
-  const country = await getCountryDataByNameOrCode(params.name);
+  const { name, flags } = await getCountryDataByNameOrCode(params.name);
 
   return {
-    title: `${country.name.common} | Countries`,
-    description: `Learn more about ${country.name.common} on Countries.`,
+    title: `${name.common} | Countries`,
+    description: `Learn more about ${name.common} on Countries.`,
     openGraph: {
-      title: `${country.name.common} | Countries`,
-      description: `Learn more about ${country.name.common} on Countries.`,
+      title: `${name.common} | Countries`,
+      description: `Learn more about ${name.common} on Countries.`,
       images: [
         {
-          url: country.flags.svg,
-          alt: `${country.name.common} flag`,
+          url: flags.svg,
+          alt: `${name.common} flag`,
         },
       ],
     },
